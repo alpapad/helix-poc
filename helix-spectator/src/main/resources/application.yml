@@ -1,0 +1,30 @@
+helix:
+  spectator:
+    zookeeper-address: ${APP_HELIX_ZOOKEPERS:localhost:22181}
+    instance-name: ${HOSTNAME:localhost}
+    cluster-name: ${APP_HELIX_CLUSTER_NAME:pocHelixCluster}
+    resource-name: ${APP_HELIX_RESOURCE:pocResource}
+    domain: ${APP_HELIX_DOMAIN:DOMAIN-A}
+spring:
+   jmx:
+      unique-names: true
+
+management:
+  server:
+    port: 10010
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include:
+        - "*"
+  endpoint:
+    jolokia:
+      enabled: true
+    metrics:
+      enabled: true
+    health:
+      enabled: true

@@ -1,0 +1,40 @@
+helix:
+  setup:
+    cluster-name: ${APP_HELIX_CLUSTER_NAME:pocHelixCluster}
+    zookeeper-address: ${APP_HELIX_ZOOKEPERS:localhost:22181}
+    rebalance-mode: full-auto
+    resource-name:  ${APP_HELIX_RESOURCE:pocResource}
+    drop: true
+    topology:
+      - instance-name: participant-za-00
+        hostname: participant-za-00
+        port: 8090
+        domain: DOMAIN-A
+        zone-id: ZONE-A
+        tags:
+          - ZONE-A-TAG
+          - DOMAIN-A-TAG
+      - instance-name: participant-za-01
+        hostname: participant-za-01
+        port: 8090
+        domain: DOMAIN-A
+        zone-id: ZONE-A
+        tags:
+          - ZONE-A-TAG
+          - DOMAIN-A-TAG
+      - instance-name: participant-zb-00
+        hostname: participant-zb-00
+        port: 8090
+        domain: DOMAIN-B
+        zone-id: ZONE-B
+        tags:
+          - ZONE-B-TAG
+          - DOMAIN-B-TAG
+      - instance-name: participant-zb-01
+        hostname: participant-zb-01
+        port: 8090
+        domain: DOMAIN-B
+        zone-id: ZONE-B
+        tags:
+          - ZONE-B-TAG
+          - DOMAIN-B-TAG

@@ -1,0 +1,35 @@
+server:
+  port: 8090
+
+helix:
+  controller:
+    instance-name: ${APP_HELIX_INSTANCE_NAME:controller}
+    zookeeper-address: ${APP_HELIX_ZOOKEPERS:localhost:22181}
+    cluster-name: ${APP_HELIX_CLUSTER_NAME:pocHelixCluster}
+    hostname: ${HOSTANME:localhost}
+    port: ${server.port}
+    type: distributed
+
+spring:
+   jmx:
+      unique-names: true
+
+management:
+  server:
+    port: 10090
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include:
+        - "*"
+  endpoint:
+    jolokia:
+      enabled: true
+    metrics:
+      enabled: true
+    health:
+      enabled: true

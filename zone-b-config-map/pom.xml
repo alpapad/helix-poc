@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.test</groupId>
+    <artifactId>helix-poc</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>zone-b-config-map</artifactId>
+  <packaging>pom</packaging>
+  
+  
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+               <executions>
+                  <execution>
+                     <id>default</id>
+                     <phase>package</phase>
+                     <goals>
+                        <goal>build</goal>
+                     </goals>
+                  </execution>
+                  <execution>
+                     <id>deploy</id>
+                     <phase>deploy</phase>
+                     <goals>
+                        <goal>push</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            <configuration>
+               <images>
+                  <image>
+                     <name>${local.docker.registry}${project.artifactId}</name>
+                     <alias>dockerfile</alias>
+                     <build>
+                        <tags>
+                           <tag>latest</tag>
+                           <tag>${project.version}</tag>
+                        </tags>
+                        <contextDir>${project.basedir}/src/main/docker</contextDir>
+                           <assembly>
+                              <descriptorRef>project</descriptorRef>
+                           </assembly>
+                     </build>
+                  </image>
+               </images>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>

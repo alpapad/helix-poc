@@ -1,0 +1,107 @@
+version: "2" 
+services:
+
+  zone-a-config-map:
+    image: alpapad/zone-a-config-map:latest
+    container_name: zone-a-config-map
+
+  zone-b-config-map:
+    image: alpapad/zone-b-config-map:latest
+    container_name: zone-b-config-map
+    
+
+  zookeeper:
+    container_name: zookeeper
+    hostname: zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+# Should have 2 controllers, one in zone A, one in zone B for failover
+  setup:
+   container_name: setup
+   hostname: setup
+   image: alpapad/helix-setup:latest
+   volumes_from:
+    - zone-a-config-map:ro
+   links:
+    - zookeeper
+
+# Should have 2 controllers, one in zone A, one in zone B for failover
+  controller-za-00:
+   container_name: controller-za-00
+   hostname: controller-za-00
+   image: alpapad/helix-controller:latest
+   volumes_from:
+    - zone-a-config-map:ro
+   links:
+    - setup
+
+  controller-zb-00:
+   container_name: controller-zb-00
+   hostname: controller-zb-00
+   image: alpapad/helix-controller:latest
+   volumes_from:
+    - zone-a-config-map:ro
+   links:
+    - setup
+
+# Participant  00 of zone za. This is a simple app, doing nothing more than telling helix: `Zone A is UP`
+  participant-za-00:
+   container_name: participant-za-00
+   hostname: participant-za-00
+   image: alpapad/helix-participant:latest
+   volumes_from:
+    - zone-a-config-map:ro
+   links:
+    - setup
+# Participant  01 of zone za. This is a simple app, doing nothing more than telling helix: `Zone A is UP`
+  participant-za-01:
+   container_name: participant-za-01
+   hostname: participant-za-01
+   image: alpapad/helix-participant:latest
+   volumes_from:
+    - zone-a-config-map:ro
+   links:
+    - setup
+
+# Participant  00 of zone zb. This is a simple app, doing nothing more than telling helix: `Zone B is UP`
+  participant-zb-00:
+   container_name: participant-zb-00
+   hostname: participant-zb-00
+   image: alpapad/helix-participant:latest
+   volumes_from:
+    - zone-b-config-map:ro
+   links:
+    - setup
+# Participant  01 of zone zb. This is a simple app, doing nothing more than telling helix: `Zone B is UP`
+  participant-zb-01:
+   container_name: participant-zb-01
+   hostname: participant-zb-01
+   image: alpapad/helix-participant:latest
+   volumes_from:
+    - zone-b-config-map:ro
+   links:
+    - setup
+
+# Actual applications in different zone. These, will just listen on the Helix cluster topology changes, and update their internal state `OnLeaderZone` to true or false...
+  app-node-za-00:
+   container_name: appnode-zone-a-00
+   hostname: appnode-zone-a-00
+   image: alpapad/helix-spectator:latest
+   volumes_from:
+    - zone-a-config-map:ro
+   links:
+    - setup
+
+  app-node-zb-00:
+   container_name: appnode-zone-b-00
+   hostname: appnode-zone-b-00
+   image: alpapad/helix-spectator:latest
+   volumes_from:
+    - zone-b-config-map:ro
+   links:
+    - setup

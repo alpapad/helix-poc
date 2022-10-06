@@ -10,10 +10,17 @@ helix:
     port: ${server.port}
 
 spring:
-   jmx:
-      unique-names: true
+  jmx:
+    enabled: true
+    unique-names: true
 
 management:
+  metrics:
+    enable:
+      all: true
+  health:
+    defaults:
+      enabled: true
   server:
     port: 10090
   endpoints:
@@ -22,9 +29,9 @@ management:
       exposure:
         include: "*"
     jmx:
+      domain: alex
       exposure:
-        include:
-        - "*"
+        include: "*"
   endpoint:
     jolokia:
       enabled: true

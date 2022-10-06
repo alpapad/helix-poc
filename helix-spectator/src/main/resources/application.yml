@@ -6,8 +6,9 @@ helix:
     resource-name: ${APP_HELIX_RESOURCE:pocResource}
     domain: ${APP_HELIX_DOMAIN:DOMAIN-A}
 spring:
-   jmx:
-      unique-names: true
+  jmx:
+    enabled: true
+    unique-names: true
 
 management:
   server:
